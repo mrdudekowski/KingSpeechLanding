@@ -17,7 +17,7 @@ class AuroraBackground {
             colorStops: options.colorStops || defaultColors,
             blend: options.blend || 0.2, // Очень мягкий blend для комфортного просмотра
             amplitude: options.amplitude || 0.8, // Уменьшаем амплитуду
-            speed: options.speed || 0.2, // Замедляем анимацию
+            speed: options.speed || 0.09, // Замедляем анимацию
             opacity: options.opacity || 0.4, // Мягкая прозрачность для комфортного просмотра
             ...options
         };
