@@ -116,7 +116,7 @@
 
 /* FAQ States */
 .faq[open] .faq__answer {
-  max-height: var(--content-height, 200px); /* Используем динамическую высоту */
+  max-height: var(--content-height, 500px); /* Увеличиваем максимальную высоту */
   opacity: 1;
   padding: 0 var(--space-6) var(--space-6);
 }
@@ -152,11 +152,17 @@
   .faq__answer {
     padding: 0 var(--space-4) var(--space-4);
     font-size: var(--text-sm);
+    line-height: 1.6; /* Улучшаем читаемость на мобильных */
   }
   
   .faq__icon {
     width: 20px;
     height: 20px;
+  }
+
+  /* Увеличиваем максимальную высоту для мобильных */
+  .faq[open] .faq__answer {
+    max-height: var(--content-height, 600px);
   }
 }
 
@@ -173,11 +179,17 @@
   .faq__answer {
     padding: 0 var(--space-3) var(--space-3);
     font-size: var(--text-sm);
+    line-height: 1.7; /* Еще лучше читаемость на маленьких экранах */
   }
   
   .faq__icon {
     width: 18px;
     height: 18px;
+  }
+
+  /* Максимальная высота для очень маленьких экранов */
+  .faq[open] .faq__answer {
+    max-height: var(--content-height, 700px);
   }
 }
 

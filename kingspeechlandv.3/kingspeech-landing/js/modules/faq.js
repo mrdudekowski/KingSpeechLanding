@@ -15,8 +15,6 @@ export class FAQManager {
       return;
     }
 
-    console.log(`❓ FAQ Manager: Found ${this.faqElements.length} FAQ elements`);
-
     this.faqElements.forEach((faq, index) => {
       const answer = faq.querySelector('.faq__answer');
       if (answer) {
@@ -26,12 +24,16 @@ export class FAQManager {
 
       // Слушаем событие toggle на details элементе
       faq.addEventListener('toggle', (e) => {
-        console.log(`❓ FAQ ${index + 1} toggled:`, faq.open ? 'opened' : 'closed');
         if (faq.open) {
           // Если FAQ открывается, закрываем все другие
           this.closeOtherFAQs(faq);
         }
       });
+    });
+
+    // Обработчик изменения размера окна
+    window.addEventListener('resize', () => {
+      this.updateFAQHeights();
     });
   }
 
@@ -43,13 +45,16 @@ export class FAQManager {
     // Получаем реальную высоту контента
     const contentHeight = answer.scrollHeight;
     
+    // Добавляем запас для мобильных устройств
+    const isMobile = window.innerWidth <= 768;
+    const adjustedHeight = isMobile ? contentHeight + 20 : contentHeight;
+    
     // Возвращаем исходное состояние
     faq.open = wasOpen;
     
     // Устанавливаем CSS переменную с реальной высотой
-    answer.style.setProperty('--content-height', `${contentHeight}px`);
+    answer.style.setProperty('--content-height', `${adjustedHeight}px`);
     
-    console.log(`❓ FAQ ${index + 1}: Content height = ${contentHeight}px`);
   }
 
   closeOtherFAQs(openFAQ) {
@@ -57,6 +62,16 @@ export class FAQManager {
     this.faqElements.forEach(faq => {
       if (faq !== openFAQ && faq.open) {
         faq.open = false;
+      }
+    });
+  }
+
+  updateFAQHeights() {
+    // Пересчитываем высоты при изменении размера окна
+    this.faqElements.forEach((faq, index) => {
+      const answer = faq.querySelector('.faq__answer');
+      if (answer) {
+        this.setupFAQAnimation(faq, answer, index);
       }
     });
   }

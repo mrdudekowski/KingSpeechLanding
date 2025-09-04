@@ -131,7 +131,7 @@
   /* Title spacing - равномерные отступы заголовков */
   --title-margin-sm: var(--space-4);      /* 16px - мобильные */
   --title-margin-md: var(--space-5);      /* 20px - планшеты */
-  --title-margin-lg: var(--space-6);      /* 24px - десктоп */
+  --title-margin-lg: var(--space-12);      /* 24px - десктоп */
   
   /* Content spacing - внутренние отступы */
   --content-gap-sm: var(--space-4);       /* 16px - мобильные */
