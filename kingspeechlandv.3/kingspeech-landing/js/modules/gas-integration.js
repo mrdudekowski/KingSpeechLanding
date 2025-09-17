@@ -7,7 +7,7 @@ class GASIntegration {
   constructor() {
     this.config = {
       // Замените на ваш реальный URL GAS webhook
-      GAS_WEBHOOK_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+      GAS_WEBHOOK_URL: 'https://script.google.com/macros/s/AKfycbzGqv62eDqHzeM91KNKpuJzw6sKrYhYWsfjmjMfoNlb5TKr5cmajA-BLh5aIiFG_EWA/exec',
       
       // Fallback URL (если основной не работает)
       FALLBACK_URL: null,
@@ -73,7 +73,7 @@ class GASIntegration {
   }
 
   /**
-   * Отправка заявки через GAS webhook
+   * Отправка заявки через GAS webhook с улучшенной обработкой ошибок
    */
   async submitLead(formData) {
     try {
@@ -109,28 +109,43 @@ class GASIntegration {
 
     } catch (error) {
       console.error('❌ Ошибка при отправке заявки:', error);
+      
+      // Детальная обработка ошибок
+      let errorMessage = 'Ошибка сети. Попробуйте еще раз.';
+      
+      if (error.message.includes('CORS')) {
+        errorMessage = 'Проблема с CORS. Заявка может быть отправлена, но ответ не получен.';
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = 'Не удалось подключиться к серверу. Проверьте интернет-соединение.';
+      } else if (error.message.includes('timeout')) {
+        errorMessage = 'Превышено время ожидания. Попробуйте еще раз.';
+      }
+      
       return {
         success: false,
-        error: 'Ошибка сети. Попробуйте еще раз.'
+        error: errorMessage,
+        details: error.message
       };
     }
   }
 
   /**
-   * Отправка HTTP запроса
+   * Отправка HTTP запроса с fallback методами
    */
   async sendRequest(data, retryCount = 0) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.config.REQUEST.timeout);
     
     try {
+      // Метод 1: Стандартный fetch с CORS
       const response = await fetch(this.config.GAS_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: this.encodeFormData(data),
-        signal: controller.signal
+        signal: controller.signal,
+        mode: 'cors'  // Пробуем с CORS
       });
 
       clearTimeout(timeoutId);
@@ -145,11 +160,53 @@ class GASIntegration {
     } catch (error) {
       clearTimeout(timeoutId);
       
+      // Если CORS ошибка, пробуем no-cors
+      if (error.message.includes('CORS') || error.message.includes('Failed to fetch')) {
+        console.log('🔄 CORS error, trying no-cors method...');
+        return this.sendRequestNoCors(data, retryCount);
+      }
+      
       // Retry logic
       if (retryCount < this.config.REQUEST.retries) {
         console.log(`🔄 Retry ${retryCount + 1}/${this.config.REQUEST.retries}`);
         await this.delay(1000 * (retryCount + 1)); // Exponential backoff
         return this.sendRequest(data, retryCount + 1);
+      }
+      
+      throw error;
+    }
+  }
+
+  /**
+   * Отправка запроса без CORS (fallback)
+   */
+  async sendRequestNoCors(data, retryCount = 0) {
+    try {
+      const response = await fetch(this.config.GAS_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: this.encodeFormData(data),
+        mode: 'no-cors'  // Без CORS
+      });
+
+      // При no-cors мы не можем прочитать ответ, но запрос отправлен
+      console.log('✅ Запрос отправлен (no-cors mode)');
+      return {
+        ok: true,
+        message: 'Заявка отправлена (no-cors mode)',
+        data: { no_cors: true }
+      };
+
+    } catch (error) {
+      console.error('❌ No-cors request failed:', error);
+      
+      // Retry logic
+      if (retryCount < this.config.REQUEST.retries) {
+        console.log(`🔄 No-cors retry ${retryCount + 1}/${this.config.REQUEST.retries}`);
+        await this.delay(1000 * (retryCount + 1));
+        return this.sendRequestNoCors(data, retryCount + 1);
       }
       
       throw error;

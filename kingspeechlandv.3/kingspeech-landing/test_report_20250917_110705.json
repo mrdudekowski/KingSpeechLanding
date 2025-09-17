@@ -1,0 +1,74 @@
+{
+  "timestamp": "2025-09-17T11:07:05.075112",
+  "tests": {
+    "css_linting": {
+      "status": "failed",
+      "error": "[WinError 2] The system cannot find the file specified"
+    },
+    "javascript_modules": {
+      "js/modules/forms.js": {
+        "status": "passed",
+        "syntax": "valid"
+      },
+      "js/modules/gas-integration.js": {
+        "status": "passed",
+        "syntax": "valid"
+      },
+      "js/modules/navigation.js": {
+        "status": "passed",
+        "syntax": "valid"
+      },
+      "js/modules/carousel.js": {
+        "status": "passed",
+        "syntax": "valid"
+      },
+      "js/modules/animations.js": {
+        "status": "passed",
+        "syntax": "valid"
+      }
+    },
+    "form_manager": {
+      "forms_found": 1,
+      "required_fields": 2,
+      "data_attributes": 2,
+      "has_validation": false,
+      "status": "passed"
+    },
+    "gas_integration": {
+      "status": "skipped",
+      "reason": "No GAS URL provided"
+    },
+    "performance": {
+      "css_files": 16,
+      "js_files": 1266,
+      "total_css_size_kb": 115.83,
+      "total_js_size_kb": 4243.12,
+      "css_acceptable": true,
+      "js_acceptable": false
+    },
+    "security": {
+      "honeypot_present": true,
+      "validation_present": false,
+      "https_required": false,
+      "cors_configured": true,
+      "score": 0.5,
+      "acceptable": false
+    },
+    "accessibility": {
+      "alt_texts": 4,
+      "aria_labels": 20,
+      "form_labels": 3,
+      "heading_structure": false,
+      "focus_management": true,
+      "score": 0.8,
+      "acceptable": true
+    }
+  },
+  "summary": {
+    "total_tests": 7,
+    "passed_tests": 1,
+    "failed_tests": 1,
+    "skipped_tests": 1,
+    "success_rate": 0.14285714285714285
+  }
+}
