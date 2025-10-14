@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест иконок</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin: 10px;
+            border: 1px solid red;
+            background: rgba(255, 0, 0, 0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест загрузки иконок</h1>
+    
+    <div class="test-section">
+        <h2>Прямые пути к изображениям:</h2>
+        <img src="assets/images/icon/coffee.png" alt="Coffee" class="test-icon">
+        <img src="assets/images/icon/teapot.png" alt="Teapot" class="test-icon">
+        <img src="assets/images/icon/hotchoc.png" alt="Hot Chocolate" class="test-icon">
+        <img src="assets/images/icon/RUM.png" alt="Rum" class="test-icon">
+    </div>
+    
+    <div class="test-section">
+        <h2>Абсолютные пути:</h2>
+        <img src="/assets/images/icon/coffee.png" alt="Coffee" class="test-icon">
+        <img src="/assets/images/icon/teapot.png" alt="Teapot" class="test-icon">
+        <img src="/assets/images/icon/hotchoc.png" alt="Hot Chocolate" class="test-icon">
+        <img src="/assets/images/icon/RUM.png" alt="Rum" class="test-icon">
+    </div>
+    
+    <div class="test-section">
+        <h2>Проверка консоли браузера:</h2>
+        <p>Откройте DevTools (F12) и проверьте вкладку Console на наличие ошибок загрузки изображений.</p>
+        <p>Также проверьте вкладку Network - должны быть запросы к файлам иконок.</p>
+    </div>
+    
+    <script>
+        // Проверяем загрузку изображений
+        const images = document.querySelectorAll('img');
+        images.forEach((img, index) => {
+            img.onload = () => {
+                console.log(`✅ Изображение ${index + 1} загружено: ${img.src}`);
+            };
+            img.onerror = () => {
+                console.error(`❌ Ошибка загрузки изображения ${index + 1}: ${img.src}`);
+            };
+        });
+    </script>
+</body>
+</html>
